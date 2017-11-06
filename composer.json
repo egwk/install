@@ -1,6 +1,7 @@
 {
     "name": "egwk/install",
     "description": "Installer Package for EGWK",
+	"license": "GPL-3.0",
     "authors": [
         {
             "name": "Peter Erdodi",
