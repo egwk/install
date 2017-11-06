@@ -16,7 +16,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Egwk\\Install\\Providers\\InstallServiceProvider"
+                "Egwk\\Install\\InstallServiceProvider"
             ]
         }
     }
