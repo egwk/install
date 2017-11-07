@@ -3,6 +3,7 @@
 namespace Egwk\Install;
 
 use Illuminate\Support\ServiceProvider;
+use Egwk\Install\Console\Commands;
 
 class InstallServiceProvider extends ServiceProvider
 {
@@ -15,8 +16,8 @@ class InstallServiceProvider extends ServiceProvider
     {
 		if ($this->app->runningInConsole()) {
 			$this->commands([
-				DownloadCommand::class,
-				InstallCommand::class,
+				Commands\Download::class,
+				Commands\Install::class,
 			]);
 		}
     }

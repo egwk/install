@@ -5,7 +5,7 @@ namespace Egwk\Install\Console\Commands;
 use \Illuminate\Console\Command;
 use \Egwk\Install\Writings\Downloader;
 
-class DownloadCommand extends Command
+class Download extends Command
     {
 
     /**
