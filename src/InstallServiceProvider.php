@@ -31,5 +31,8 @@ class InstallServiceProvider extends ServiceProvider
 		$this->mergeConfigFrom(
 			__DIR__ . '/../config/install.php', 'install'
 		);
+		$this->mergeConfigFrom(
+			__DIR__ . '/../config/stopwords.php', 'install.stopwords'
+		);
     }
 }
