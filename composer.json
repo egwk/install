@@ -13,6 +13,11 @@
         "umisoft/phpmorphy": "^1.0",
         "predis/predis": "^1.1"
 	},
+    "autoload": {
+        "psr-4": {
+            "Egwk\\Install\\": "src/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
