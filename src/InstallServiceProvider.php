@@ -29,7 +29,7 @@ class InstallServiceProvider extends ServiceProvider
     public function register()
     {
 		$this->mergeConfigFrom(
-			__DIR__ . '../config/install.php', 'install'
+			__DIR__ . '/../config/install.php', 'install'
 		);
     }
 }
