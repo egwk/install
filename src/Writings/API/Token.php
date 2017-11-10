@@ -11,42 +11,79 @@ use Egwk\Install\Writings\API;
  * @author Peter
  */
 class Token
-    {
+{
 
     const TOKEN_URL = 'https://cpanel.egwwritings.org/o/token/';
 
     /**
      * 
-     * @var API $api
+     * @var API API object
      */
     protected $api = null;
 
+    /**
+     * Class constructor
+     *
+     * @access public
+     * @param API $api EGWWritings API object
+     * @return void
+     */
     public function __construct(API $api)
-        {
+    {
         $this->api = $api;
-        }
+    }
 
+    /**
+     * Gets API
+     *
+     * @access public
+     * @return API EGWWritings API object
+     */
     public function getAPI(): API
-        {
+    {
         return $this->api;
-        }
+    }
 
+    /**
+     * Gets Access Token from Redis, or Requests a new one if not exists or expired
+     *
+     * @access public
+     * @return string Access Token
+     */
     public function getAccessToken(): string
-        {
+    {
         if (null === Redis::get('egwk:egwwritings:token'))
-            {
-            $responseObject = $this->requestAccessToken();
-            if (isset($responseObject->access_token))
-                {
-                Redis::set('egwk:egwwritings:token', $responseObject->access_token);
-                Redis::command('expire', ['egwk:egwwritings:token', $responseObject->expires_in]);
-                }
-            }
-        return Redis::get('egwk:egwwritings:token');
-        }
-
-    protected function requestAccessToken()
         {
+            $responseObject = $this->requestAccessToken();
+            $this->storeAccessToken($responseObject);
+        }
+        return Redis::get('egwk:egwwritings:token');
+    }
+
+    /**
+     * Stores Access Token in Redis
+     *
+     * @access public
+     * @param StdClass $tokenObject StdClass Token Request result
+     * @return void
+     */
+    public function storeAccessToken($tokenObject)
+    {
+        if (isset($tokenObject->access_token))
+        {
+            Redis::set('egwk:egwwritings:token', $tokenObject->access_token);
+            Redis::command('expire', ['egwk:egwwritings:token', $tokenObject->expires_in]);
+        }
+    }
+
+    /**
+     * Requests Access Token
+     *
+     * @access protected
+     * @return StdClass Token Request result
+     */
+    protected function requestAccessToken()
+    {
         return $this->getAPI()->request('POST', config('install.token_url', self::TOKEN_URL), [
                     'form_params' => [
                         'client_id'     => env('EGWWRITINGS_KEY'),
@@ -58,6 +95,6 @@ class Token
                     'headers'     => [
                     ]
         ]);
-        }
-
     }
+
+}

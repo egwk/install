@@ -13,10 +13,11 @@ namespace Egwk\Install\Writings;
  *
  * @author Peter
  */
-class Process
-    {
+class Download
+{
 
-	use \Egwk\Install\Writings\Tools\OperationCounter;
+    use \Egwk\Install\Writings\Tools\OperationCounter;
+    use \Egwk\Install\Writings\Tools\ProcessLog;
 
     /**
      *
@@ -39,11 +40,11 @@ class Process
      * @return void
      */
     public function __construct(API\Iterator $iterator, Export\Export $export)
-        {
+    {
         $this->export   = $export;
         $this->iterator = $iterator;
         $this->initCounter(0); // set positive value for testing 
-        }
+    }
 
     /**
      * Process chapter, export paragraphs
@@ -53,21 +54,21 @@ class Process
      * @return void
      */
     protected function chapter(\stdClass $tocEntry)
-        {
-        echo "      $tocEntry->para_id :: $tocEntry->title\n            ";
+    {
+        $this->logProc([$tocEntry->para_id, $tocEntry->title], 3);
         list($bookId, $idElement) = explode('.', $tocEntry->para_id, 2);
         foreach ($this->iterator->chapter($bookId, $idElement) as $paragraph)
-            {
-            echo ".";
+        {
+            $this->logTick();
             $this->export->export($paragraph);
             $this->stepCounter();
-            if ($this->counterTermSignal())
-                {
+            if ($this->getOperationTermSignal())
+            {
                 break;
-                }
             }
-        echo "\n";
         }
+        $this->logBr();
+    }
 
     /**
      * Process Table of Contents, export chapters
@@ -77,17 +78,17 @@ class Process
      * @return void
      */
     protected function toc(\stdClass $book)
-        {
-        echo "  $book->code :: $book->title\n";
+    {
+        $this->logProc([$book->code, $book->title], 1);
         foreach ($this->iterator->toc($book->book_id) as $tocEntry)
-            {
+        {
             $this->chapter($tocEntry);
-            if ($this->counterTermSignal())
-                {
+            if ($this->getOperationTermSignal())
+            {
                 break;
-                }
             }
         }
+    }
 
     /**
      * Process books, export Table of Contents
@@ -97,17 +98,17 @@ class Process
      * @return void
      */
     protected function books(\stdClass $folder)
-        {
-        echo "$folder->folder_id - $folder->name\n";
+    {
+        $this->logProc([$folder->folder_id, $folder->name], 0, "-");
         foreach ($this->iterator->books($folder->folder_id) as $book)
-            {
+        {
             $this->toc($book);
-            if ($this->counterTermSignal())
-                {
+            if ($this->getOperationTermSignal())
+            {
                 break;
-                }
             }
         }
+    }
 
     /**
      * Process writings folders, export books.
@@ -116,15 +117,15 @@ class Process
      * @return void
      */
     public function writings()
-        {
+    {
         foreach ($this->iterator->writings() as $folder)
-            {
+        {
             $this->books($folder);
-            if ($this->counterTermSignal())
-                {
+            if ($this->getOperationTermSignal())
+            {
                 break;
-                }
             }
         }
-
     }
+
+}

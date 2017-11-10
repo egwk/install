@@ -3,10 +3,10 @@
 namespace Egwk\Install\Console\Commands;
 
 use \Illuminate\Console\Command;
-use \Egwk\Install\Writings\Downloader;
+use Egwk\Install\Writings;
 
 class Download extends Command
-    {
+{
 
     /**
      * The name and signature of the console command.
@@ -28,9 +28,9 @@ class Download extends Command
      * @return void
      */
     public function __construct()
-        {
+    {
         parent::__construct();
-        }
+    }
 
     /**
      * Execute the console command.
@@ -38,9 +38,22 @@ class Download extends Command
      * @return mixed
      */
     public function handle()
-        {
-        $writingsInstaller = new Downloader();
-        $writingsInstaller->install();
-        }
+    {
+        //Setting up EGWWritings API
+        $api      = new Writings\API();
+        $request  = new Writings\API\Request($api);
+        $iterator = new Writings\API\Iterator($request);
 
+        //Defining target file
+        $outputFile = storage_path('egwwritings.csv');
+
+        //Setting up text processing
+        $morphy = new Writings\Morphy(__DIR__ . '/../../../data/phpmorphy/en');
+        $filter = new Writings\Filter($morphy);
+        $export = new Writings\Export\CsvDump($filter, $outputFile);
+
+        //Start download!
+        (new Writings\Download($iterator, $export))->writings();
     }
+
+}

@@ -7,6 +7,7 @@ use Egwk\Install\Console\Commands;
 
 class InstallServiceProvider extends ServiceProvider
 {
+
     /**
      * Bootstrap the application services.
      *
@@ -14,12 +15,13 @@ class InstallServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-		if ($this->app->runningInConsole()) {
-			$this->commands([
-				Commands\Download::class,
-				Commands\Install::class,
-			]);
-		}
+        if ($this->app->runningInConsole())
+        {
+            $this->commands([
+                Commands\Download::class,
+                Commands\Install::class,
+            ]);
+        }
     }
 
     /**
@@ -29,11 +31,12 @@ class InstallServiceProvider extends ServiceProvider
      */
     public function register()
     {
-		$this->mergeConfigFrom(
-			__DIR__ . '/../config/install.php', 'install'
-		);
-		$this->mergeConfigFrom(
-			__DIR__ . '/../config/stopwords.php', 'install.stopwords'
-		);
+        $this->mergeConfigFrom(
+                __DIR__ . '/../config/install.php', 'install'
+        );
+        $this->mergeConfigFrom(
+                __DIR__ . '/../config/stopwords.php', 'install.stopwords'
+        );
     }
+
 }

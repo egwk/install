@@ -10,9 +10,9 @@ use Egwk\Install\Writings\Filter;
  * @author Peter
  */
 class CsvDump extends File
-    {
+{
 
-    use Egwk\Install\Writings\Tools\Csv;
+    use \Egwk\Install\Writings\Tools\Csv;
 
     const MODIFIER_PARAGRAPHS = "paragraphs";
     const MODIFIER_WORDS      = "words";
@@ -20,38 +20,75 @@ class CsvDump extends File
 
     protected $parents = [1 => '', '', '', '', '', ''];
 
-    public function __construct(Filter $filter)
-        {
-        parent::__construct($filter, storage_path("egwwritings.csv"));
-        }
+    /**
+     * Class constructor
+     *
+     * @access public
+     * @param Filter $filter Filter
+     * @param string $outputFile Output file
+     * @return void
+     */
+    public function __construct(Filter $filter, $outputFile = "./data")
+    {
+        parent::__construct($filter, $outputFile);
+    }
 
+    /**
+     * Clears parents
+     *
+     * @access protected
+     * @param array $parents Parents
+     * @param int $elementLevel Element level
+     * @return StdClass JSON node
+     */
     protected function clearParents(&$parents, $elementLevel)
-        {
+    {
         for ($i = $elementLevel; $i <= 6; $i++)
-            {
+        {
             $parents[$i] = '';
-            }
         }
+    }
 
+    /**
+     * Get element level
+     *
+     * @access protected
+     * @param string $elementType Element type
+     * @return int Element level
+     */
     protected function getElementLevel(string $elementType): int
-        {
+    {
         if (preg_match('/h[1-6]/', $elementType))
-            {
-            return (int) substr($elementType, 1, 1);
-            }
-        return 7;
-        }
-
-    protected function initOutputFile($outputFile = "./data")
         {
+            return (int) substr($elementType, 1, 1);
+        }
+        return 7;
+    }
+
+    /**
+     * Initializes output file
+     *
+     * @access protected
+     * @param string $outputFile Output file name
+     * @return void
+     */
+    protected function initOutputFile(string $outputFile = "./data")
+    {
         $this->outputFile = $outputFile;
         $this->resetOutputFile(self::MODIFIER_PARAGRAPHS);
         $this->resetOutputFile(self::MODIFIER_WORDS);
         $this->resetOutputFile(self::MODIFIER_SENTENCES);
-        }
+    }
 
+    /**
+     * Generates word set
+     *
+     * @access protected
+     * @param StdClass $paragraph Paragraph
+     * @return string Set of words
+     */
     protected function words($paragraph)
-        {
+    {
         $words = $this->chainFilter
                 ->set($paragraph->content)
                 ->strip()
@@ -63,16 +100,30 @@ class CsvDump extends File
                 ->stick()
                 ->get();
         return $words;
-        }
+    }
 
+    /**
+     * Generates list of sentences
+     *
+     * @access protected
+     * @param StdClass $paragraph Paragraph
+     * @return array List of sentences
+     */
     protected function sentences($paragraph)
-        {
+    {
         $sentences = $this->sentenceFilter->splitIntoSentences($this->filter->strip($paragraph->content));
         return $sentences;
-        }
+    }
 
+    /**
+     * Generates word lists by sentence
+     *
+     * @access protected
+     * @param array $sentences Sentences
+     * @return array Word lists by sentence
+     */
     protected function sentenceWordLists(array $sentences)
-        {
+    {
         $sentenceWordLists = $this->sentenceChainFilter
                 ->set($sentences)
                 ->strip()
@@ -84,26 +135,33 @@ class CsvDump extends File
                 ->stick()
                 ->get();
         return $sentenceWordLists;
-        }
+    }
 
+    /**
+     * Processes and exports a paragraph to the CSV files
+     *
+     * @access public
+     * @param StdClass $paragraph Paragraph
+     * @return void
+     */
     public function export($paragraph)
-        {
+    {
         $words             = $this->words($paragraph);
         $wordList          = str_replace(' ', "\n", $words) . "\n";
         $this->writeOutputFile($wordList, self::MODIFIER_WORDS);
         $sentences         = $this->sentences($paragraph);
         $sentenceWordLists = $this->sentenceWordLists($sentences);
         foreach ($sentences as $k => $sentence)
-            {
+        {
             $sentenceWordList = array_get($sentenceWordLists, $k, "");
             $csvSentenceRow   = $this->createCsv('|', $paragraph->para_id, ($k + 1), $sentence, $sentenceWordList);
             $this->writeOutputFile($csvSentenceRow, self::MODIFIER_SENTENCES);
-            }
+        }
         $level                 = $this->getElementLevel($paragraph->element_type);
         $this->clearParents($this->parents, $level);
         $csvRow                = $this->createCsv('|', $paragraph, $this->parents, $words);
         $this->writeOutputFile($csvRow, self::MODIFIER_PARAGRAPHS);
         $this->parents[$level] = $paragraph->para_id;
-        }
-
     }
+
+}

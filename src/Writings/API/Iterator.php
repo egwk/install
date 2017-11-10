@@ -10,120 +10,206 @@ use Egwk\Install\Writings\API\Request;
  * @author Peter
  */
 class Iterator
-    {
+{
 
-    const SKIP_FOLDER_LIST = ['Indexes', 'Annotated', 'Biography',];
+    /**
+     * Default value for folder filter (Config::install.skip_folder)
+     */
+    const SKIP_FOLDER_LIST = [];
 
+    /**
+     * Default language(Config::install.language)
+     */
+    const LANGUAGE = 'en';
+
+    /**
+     * @var Request Request object
+     */
     protected $request = null;
 
+    /**
+     * Class constructor
+     *
+     * @access public
+     * @param Request $request Request object
+     * @return void
+     */
     public function __construct(Request $request)
-        {
+    {
         $this->request = $request;
-        }
+    }
 
+    /**
+     * Requests and iterates through folders
+     *
+     * @access public
+     * @return StdClass JSON node
+     */
     public function writings()
+    {
+        $language = config('install.language', self::LANGUAGE);
+        foreach ($this->request->get("/content/languages/$language/folders/") as $topFolder)
         {
-        foreach ($this->request->get("/content/languages/en/folders/") as $topFolder)
+            if (config('install.top_folder', 'EGW Writings') == $topFolder->name)
             {
-            if ("EGW Writings" == $topFolder->name)
-                {
                 yield from $this->writingsChildren($topFolder->children);
-                }
             }
         }
+    }
 
-    protected function writingsChildren($topFolder)
+    /**
+     * Requests and iterates through sub-folders recursively
+     *
+     * @access protected
+     * @param array $children List of sub-folders
+     * @return StdClass JSON node
+     */
+    protected function writingsChildren($children)
+    {
+        foreach ($children as $folder)
         {
-        foreach ($topFolder as $folder)
+            if (!in_array($folder->name, config('install.skip_folder', self::SKIP_FOLDER_LIST)))
             {
-            if (!in_array($folder->name, self::SKIP_FOLDER_LIST))
-                {
                 if (!empty($folder->children))
-                    {
+                {
                     yield from $this->writingsChildren($folder->children);
-                    }
+                }
                 else
-                    {
+                {
                     yield $folder;
-                    }
                 }
             }
         }
+    }
 
+    /**
+     * Requests and iterates through a chapter's paragraphs
+     *
+     * @access public
+     * @param string $bookId Book ID
+     * @param string $chapterId Chapter ID
+     * @return StdClass JSON paragraph
+     */
     public function chapter($bookId, $chapterId)
-        {
+    {
         foreach ($this->iterate("/content/books/$bookId/chapter/$chapterId/") as $paragraph)
-            {
+        {
             yield $paragraph;
-            }
         }
+    }
 
+    /**
+     * Requests and iterates through a book's TOC
+     *
+     * @access public
+     * @param string $bookId Book ID
+     * @return StdClass JSON TOC entry
+     */
     public function toc($bookId)
+    {
+        foreach ($this->iterate("/content/books/$bookId/toc/") as $entry)
         {
-        foreach ($this->iterate("/content/books/$bookId/toc/") as $book)
-            {
-            yield $book;
-            }
+            yield $entry;
         }
+    }
 
+    /**
+     * Requests and iterates through several paragraphs
+     *
+     * @access public
+     * @param string $bookId Book ID
+     * @param string $idElement ID Element
+     * @return StdClass JSON paragraph
+     */
     public function paragraphs($bookId, $idElement)
+    {
+        foreach ($this->iterate("/content/books/$bookId/content/$idElement/") as $paragraph)
         {
-        foreach ($this->iterate("/content/books/$bookId/content/$idElement/") as $book)
-            {
-            yield $book;
-            }
+            yield $paragraph;
         }
+    }
 
+    /**
+     * Requests and iterates through list of books in a folder
+     *
+     * @access public
+     * @param string $folder Book ID
+     * @return StdClass JSON paragraph
+     */
     public function books($folder = null)
-        {
+    {
         $byFolder = null === $folder ? '' : "by_folder/$folder/";
         foreach ($this->iterate('/content/books/' . $byFolder) as $book)
-            {
-            yield $book;
-            }
-        }
-
-    protected function resultPages($parentItem, string $nextField)
         {
+            yield $book;
+        }
+    }
+
+    /**
+     * Iterates through result pages
+     *
+     * @access protected
+     * @param StdClass $parentItem Parent item
+     * @param string $nextField Next field
+     * @return StdClass JSON page
+     */
+    protected function resultPages($parentItem, string $nextField)
+    {
         $hasNext = false;
         do
-            {
+        {
             foreach ($parentItem->results as $item)
-                {
+            {
                 yield $item;
-                }
+            }
             $hasNext = $parentItem->{$nextField} !== null;
             if ($hasNext)
-                {
-                $parentItem = $this->request->getAPI()->request('GET', $parentItem->{$nextField});
-                }
-            }
-        while ($hasNext);
-        }
-
-    protected function resultItems(array $items)
-        {
-        foreach ($items as $item)
             {
-            yield $item;
+                $parentItem = $this->request->getAPI()->request('GET', $parentItem->{$nextField});
             }
         }
+        while ($hasNext);
+    }
 
-    protected function iterate(string $command, $parameters = [], $nextField = "next")
+    /**
+     * Iterates through result items
+     *
+     * @access protected
+     * @param array $items Next field
+     * @return StdClass JSON item
+     */
+    protected function resultItems(array $items)
+    {
+        foreach ($items as $item)
         {
+            yield $item;
+        }
+    }
+
+    /**
+     * Iterator base
+     *
+     * @access protected
+     * @param string $command Command
+     * @param array $parameters Parameters
+     * @param string $nextField Next field
+     * @return StdClass JSON item
+     */
+    protected function iterate(string $command, $parameters = [], $nextField = "next")
+    {
         $items = $this->request->get($command, $parameters);
         if (null !== $items)
-            {
+        {
             if (!isset($items->results))
-                {
+            {
                 yield from $this->resultItems($items);
-                }
-            else
-                {
-                yield from $this->resultPages($items, $nextField);
-                }
             }
-        return [];
+            else
+            {
+                yield from $this->resultPages($items, $nextField);
+            }
         }
-
+        return [];
     }
+
+}
