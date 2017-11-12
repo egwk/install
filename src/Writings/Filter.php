@@ -92,7 +92,7 @@ class Filter
                         return "";
                     }
                     return $word;
-                }, array_diff($words, config('install.stopwords', []))));
+                }, array_diff($words, $this->getStopWords())));
     }
 
     /**
