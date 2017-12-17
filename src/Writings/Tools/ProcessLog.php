@@ -12,10 +12,10 @@ namespace Egwk\Install\Writings\Tools;
 trait ProcessLog
 {
 
-    protected $logGlue     = " :: ";
+    protected $logGlue = " :: ";
     protected $logLevelPad = "  ";
-    protected $logBr       = "\n";
-    protected $logTick     = ".";
+    protected $logBr = "\n";
+    protected $logTick = ".";
 
     /**
      * Logs process to screen
@@ -30,7 +30,7 @@ trait ProcessLog
     private function logProc(array $data, $level = 0, $glue = null, $pad = null)
     {
         $glue = $glue !== null ? $glue : $this->logGlue;
-        $pad  = $pad !== null ? $pad : $this->logLevelPad;
+        $pad = $pad !== null ? $pad : $this->logLevelPad;
         echo str_repeat($pad, $level) . implode($glue, $data) . $this->logBr();
     }
 

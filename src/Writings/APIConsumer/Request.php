@@ -1,8 +1,8 @@
 <?php
 
-namespace Egwk\Install\Writings\API;
+namespace Egwk\Install\Writings\APIConsumer;
 
-use Egwk\Install\Writings\API\Token;
+use Egwk\Install\Writings\APIConsumer\Token;
 
 /**
  * Description of Request
@@ -45,7 +45,7 @@ class Request extends Token
         if (null !== $token)
         {
             $parameters['query'] = array_merge(array_get($parameters, 'query', []), ['access_token' => $token]);
-            return $this->getAPI()->request($verb, config('install.api_url', self::API_URL) . $command, $parameters);
+            return $this->getAPIConsumer()->request($verb, config('install.api_url', self::API_URL) . $command, $parameters);
         }
         return null;
     }

@@ -9,7 +9,7 @@ use GuzzleHttp;
  *
  * @author Peter
  */
-class API
+class APIConsumer
 {
 
     /**

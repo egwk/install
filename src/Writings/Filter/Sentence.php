@@ -51,7 +51,7 @@ class Sentence
     {
         $sentencesTmp = [];
         preg_match_all('/.*?[' . self::SEPARATORS . ']/s', $this->sentencePreFilters($text), $sentencesTmp);
-        $sentences    = array_shift($sentencesTmp);
+        $sentences = array_shift($sentencesTmp);
         return $this->sentencePostFilters($sentences);
     }
 

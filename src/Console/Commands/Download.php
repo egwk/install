@@ -40,9 +40,10 @@ class Download extends Command
     public function handle()
     {
         //Setting up EGWWritings API
-        $api      = new Writings\API();
-        $request  = new Writings\API\Request($api);
-        $iterator = new Writings\API\Iterator($request);
+        $apiConsumer = new Writings\APIConsumer();
+        $tokenStore = new Writings\APIConsumer\TokenStore\Redis();
+        $request = new Writings\APIConsumer\Request($apiConsumer, $tokenStore);
+        $iterator = new Writings\APIConsumer\Iterator($request);
 
         //Defining target file
         $outputFile = storage_path('egwwritings.csv');

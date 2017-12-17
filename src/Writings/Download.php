@@ -27,7 +27,7 @@ class Download
 
     /**
      *
-     * @var API\Iterator $iterator 
+     * @var APIConsumer\Iterator $iterator 
      */
     protected $iterator = null;
 
@@ -35,13 +35,13 @@ class Download
      * Class constructor
      *  
      * @access public
-     * @param \Egwk\Install\Writings\API\Iterator $iterator
+     * @param \Egwk\Install\Writings\APIConsumer\Iterator $iterator
      * @param \Egwk\Install\Writings\Export\Export $export
      * @return void
      */
-    public function __construct(API\Iterator $iterator, Export\Export $export)
+    public function __construct(APIConsumer\Iterator $iterator, Export\Export $export)
     {
-        $this->export   = $export;
+        $this->export = $export;
         $this->iterator = $iterator;
         $this->initCounter(0); // set positive value for testing 
     }

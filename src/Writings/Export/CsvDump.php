@@ -15,8 +15,8 @@ class CsvDump extends File
     use \Egwk\Install\Writings\Tools\Csv;
 
     const MODIFIER_PARAGRAPHS = "paragraphs";
-    const MODIFIER_WORDS      = "words";
-    const MODIFIER_SENTENCES  = "sentences";
+    const MODIFIER_WORDS = "words";
+    const MODIFIER_SENTENCES = "sentences";
 
     protected $parents = [1 => '', '', '', '', '', ''];
 
@@ -146,20 +146,20 @@ class CsvDump extends File
      */
     public function export($paragraph)
     {
-        $words             = $this->words($paragraph);
-        $wordList          = str_replace(' ', "\n", $words) . "\n";
+        $words = $this->words($paragraph);
+        $wordList = str_replace(' ', "\n", $words) . "\n";
         $this->writeOutputFile($wordList, self::MODIFIER_WORDS);
-        $sentences         = $this->sentences($paragraph);
+        $sentences = $this->sentences($paragraph);
         $sentenceWordLists = $this->sentenceWordLists($sentences);
         foreach ($sentences as $k => $sentence)
         {
             $sentenceWordList = array_get($sentenceWordLists, $k, "");
-            $csvSentenceRow   = $this->createCsv('|', $paragraph->para_id, ($k + 1), $sentence, $sentenceWordList);
+            $csvSentenceRow = $this->createCsv('|', $paragraph->para_id, ($k + 1), $sentence, $sentenceWordList);
             $this->writeOutputFile($csvSentenceRow, self::MODIFIER_SENTENCES);
         }
-        $level                 = $this->getElementLevel($paragraph->element_type);
+        $level = $this->getElementLevel($paragraph->element_type);
         $this->clearParents($this->parents, $level);
-        $csvRow                = $this->createCsv('|', $paragraph, $this->parents, $words);
+        $csvRow = $this->createCsv('|', $paragraph, $this->parents, $words);
         $this->writeOutputFile($csvRow, self::MODIFIER_PARAGRAPHS);
         $this->parents[$level] = $paragraph->para_id;
     }

@@ -28,8 +28,7 @@ trait Csv
             if (is_object($arg))
             {
                 $arg = (array) ($arg);
-            }
-            elseif (!is_array($arg))
+            } elseif (!is_array($arg))
             {
                 $arg = [$arg];
             }

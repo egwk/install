@@ -1,8 +1,8 @@
 <?php
 
-namespace Egwk\Install\Writings\API;
+namespace Egwk\Install\Writings\APIConsumer;
 
-use Egwk\Install\Writings\API\Request;
+use Egwk\Install\Writings\APIConsumer\Request;
 
 /**
  * Description of Iterator
@@ -73,8 +73,7 @@ class Iterator
                 if (!empty($folder->children))
                 {
                     yield from $this->writingsChildren($folder->children);
-                }
-                else
+                } else
                 {
                     yield $folder;
                 }
@@ -165,10 +164,9 @@ class Iterator
             $hasNext = $parentItem->{$nextField} !== null;
             if ($hasNext)
             {
-                $parentItem = $this->request->getAPI()->request('GET', $parentItem->{$nextField});
+                $parentItem = $this->request->getAPIConsumer()->request('GET', $parentItem->{$nextField});
             }
-        }
-        while ($hasNext);
+        } while ($hasNext);
     }
 
     /**
@@ -203,8 +201,7 @@ class Iterator
             if (!isset($items->results))
             {
                 yield from $this->resultItems($items);
-            }
-            else
+            } else
             {
                 yield from $this->resultPages($items, $nextField);
             }

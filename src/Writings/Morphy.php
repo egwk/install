@@ -81,13 +81,12 @@ class Morphy
             try
             {
                 $this->morphy = new phpMorphy($dictBundle, [
-                    'storage'           => PHPMORPHY_STORAGE_FILE,
-                    'with_gramtab'      => false,
+                    'storage' => PHPMORPHY_STORAGE_FILE,
+                    'with_gramtab' => false,
                     'predict_by_suffix' => true,
-                    'predict_by_db'     => true
+                    'predict_by_db' => true
                 ]);
-            }
-            catch (phpMorphy_Exception $e)
+            } catch (phpMorphy_Exception $e)
             {
                 die('Error occured while creating phpMorphy instance: ' . $e->getMessage());
             }

@@ -54,9 +54,9 @@ abstract class Export
      */
     public function __construct(Filter $filter)
     {
-        $this->filter              = $filter;
-        $this->sentenceFilter      = new Filter\Sentence($this->filter);
-        $this->chainFilter         = new Filter\Wrapper\Chain($this->filter);
+        $this->filter = $filter;
+        $this->sentenceFilter = new Filter\Sentence($this->filter);
+        $this->chainFilter = new Filter\Wrapper\Chain($this->filter);
         $this->sentenceChainFilter = new Filter\Wrapper\Chain\Sentence($this->sentenceFilter);
     }
 
