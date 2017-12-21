@@ -6,7 +6,7 @@ use Egwk\Install\Writings\APIConsumer\TokenStore;
 use Illuminate\Support\Facades\Redis as RedisFacade;
 
 /**
- * Description of TokenStore
+ * TokenStore
  *
  * @author Peter
  */

@@ -31,7 +31,8 @@ trait ProcessLog
     {
         $glue = $glue !== null ? $glue : $this->logGlue;
         $pad = $pad !== null ? $pad : $this->logLevelPad;
-        echo str_repeat($pad, $level) . implode($glue, $data) . $this->logBr();
+        echo str_repeat($pad, $level) . implode($glue, $data);
+        return $this->logBr();
     }
 
     /**
@@ -44,6 +45,7 @@ trait ProcessLog
     private function logTick($tick = null)
     {
         echo $tick !== null ? $tick : $this->logTick;
+        return $this;
     }
 
     /**
@@ -56,6 +58,7 @@ trait ProcessLog
     private function logBr($br = null)
     {
         echo $br !== null ? $br : $this->logBr;
+        return $this;
     }
 
 }

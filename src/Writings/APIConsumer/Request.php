@@ -5,7 +5,7 @@ namespace Egwk\Install\Writings\APIConsumer;
 use Egwk\Install\Writings\APIConsumer\Token;
 
 /**
- * Description of Request
+ * Request
  *
  * @author Peter
  */

@@ -3,7 +3,7 @@
 namespace Egwk\Install\Writings;
 
 /**
- * Description of Filter
+ * Filter
  *
  * @author Peter
  */

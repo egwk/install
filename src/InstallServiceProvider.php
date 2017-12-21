@@ -20,6 +20,7 @@ class InstallServiceProvider extends ServiceProvider
             $this->commands([
                 Commands\Download::class,
                 Commands\Install::class,
+                Commands\Import::class,
             ]);
         }
     }

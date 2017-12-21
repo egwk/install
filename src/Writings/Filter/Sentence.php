@@ -5,7 +5,7 @@ namespace Egwk\Install\Writings\Filter;
 use Egwk\Install\Writings\Filter;
 
 /**
- * Description of WritingsSentenceFilter
+ * WritingsSentenceFilter
  *
  * @author Peter
  */

@@ -5,7 +5,7 @@ namespace Egwk\Install\Writings\Export;
 use Egwk\Install\Writings\Filter;
 
 /**
- * Description of Export
+ * Export
  *
  * @author Peter
  */

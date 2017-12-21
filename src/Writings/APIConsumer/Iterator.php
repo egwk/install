@@ -5,7 +5,7 @@ namespace Egwk\Install\Writings\APIConsumer;
 use Egwk\Install\Writings\APIConsumer\Request;
 
 /**
- * Description of Iterator
+ * Iterator
  *
  * @author Peter
  */

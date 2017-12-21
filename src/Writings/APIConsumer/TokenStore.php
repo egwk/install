@@ -9,7 +9,7 @@
 namespace Egwk\Install\Writings\APIConsumer;
 
 /**
- * Description of TokenStore
+ * TokenStore
  *
  * @author Peter
  */

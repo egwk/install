@@ -5,7 +5,7 @@ namespace Egwk\Install\Writings;
 use GuzzleHttp;
 
 /**
- * Description of API
+ * API
  *
  * @author Peter
  */

@@ -6,7 +6,7 @@ use Egwk\Install\Writings\APIConsumer;
 use Egwk\Install\Writings\APIConsumer\TokenStore;
 
 /**
- * Description of Token
+ * Token
  *
  * @author Peter
  */
