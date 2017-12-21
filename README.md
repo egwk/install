@@ -4,7 +4,7 @@ Laravel package for installing EGWK.
 ## Features / Console commands
 - downloads books from egwwritings.org
 - text processing (creates normalized, lemmatized word sets of paragraphs, excludes stop-words)
+- imports translations to DB
 
 ## TODO
-- importing to DB
 - similarity-mining
