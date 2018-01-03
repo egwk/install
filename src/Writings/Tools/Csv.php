@@ -19,10 +19,10 @@ trait Csv
      * @param string $glue Glue
      * @return string Glue
      */
-    private function createCsv($glue = ',')
+    private function createCsv($glue = ',', $eol = "\n")
     {
         $data = [];
-        for ($i = 1; $i < func_num_args(); $i++)
+        for ($i = 2; $i < func_num_args(); $i++)
         {
             $arg = func_get_arg($i);
             if (is_object($arg))
@@ -37,7 +37,7 @@ trait Csv
                 return !is_array($e);
             });
         }
-        return implode($glue, $data) . "\n";
+        return implode($glue, $data) . $eol;
     }
 
 }
