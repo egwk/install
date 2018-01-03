@@ -140,6 +140,18 @@ class CsvDump extends File
     /**
      * Processes and exports a paragraph to the CSV files
      *
+     *    TRUNCATE TABLE egwk3_original;
+     *    LOAD DATA LOCAL INFILE egwwritings.paragraphs.csv
+	 *    INTO TABLE table_name CHARACTER SET UTF8 
+     *        FIELDS TERMINATED BY '|' 
+     *        LINES TERMINATED BY '@\n' 
+     *        (
+     *            para_id, id_prev, id_next,
+	 *            refcode_1, refcode_2, refcode_3, refcode_4, refcode_short, refcode_long,
+     *            element_type, element_subtype, content, puborder,
+	 *            parent_1, parent_2, parent_3, parent_4, parent_5, parent_6, wordlist
+     *        );
+     *
      * @access public
      * @param StdClass $paragraph Paragraph
      * @return void
@@ -154,12 +166,12 @@ class CsvDump extends File
         foreach ($sentences as $k => $sentence)
         {
             $sentenceWordList = array_get($sentenceWordLists, $k, "");
-            $csvSentenceRow = $this->createCsv('|', $paragraph->para_id, ($k + 1), $sentence, $sentenceWordList);
+            $csvSentenceRow = $this->createCsv("|", "@\n", $paragraph->para_id, ($k + 1), $sentence, $sentenceWordList);
             $this->writeOutputFile($csvSentenceRow, self::MODIFIER_SENTENCES);
         }
         $level = $this->getElementLevel($paragraph->element_type);
         $this->clearParents($this->parents, $level);
-        $csvRow = $this->createCsv('|', $paragraph, $this->parents, $words);
+        $csvRow = $this->createCsv("|", "@\n", $paragraph, $this->parents, $words);
         $this->writeOutputFile($csvRow, self::MODIFIER_PARAGRAPHS);
         $this->parents[$level] = $paragraph->para_id;
     }
